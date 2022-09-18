@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "src/hasura"
+	},
+	{
+		"path": "src/wtf-is-next"
+	},
+	{
+		"path": "src/graphql"
+	}
+],
+  "settings": {}
+}

@@ -1,0 +1,16 @@
+overwrite: true
+schema: ./schema/graphql-schema.json
+documents: "./src/**/*.gql"
+generates:
+  ../wtf-is-next/generated/react-graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+config:
+  namingConvention:
+    typeNames: pascal-case#pascalCase
+    enumValues: upper-case#upperCase
+    transformUnderscore: true

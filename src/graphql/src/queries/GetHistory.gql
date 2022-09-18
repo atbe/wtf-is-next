@@ -1,0 +1,11 @@
+query GetHistory {
+  messages(order_by: { createdAt: desc }) {
+    message
+    createdAt
+    id
+    userId
+    user {
+      username
+    }
+  }
+}

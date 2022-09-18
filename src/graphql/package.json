@@ -1,0 +1,19 @@
+{
+  "name": "graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "graphql-codegen": "npx graphql-codegen -c codegen.yml"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^1.21.4",
+    "@graphql-codegen/typescript-apollo-client-helpers": "^1.1.10",
+    "@graphql-codegen/typescript-document-nodes": "^1.17.16",
+    "@graphql-codegen/typescript-operations": "^1.17.16",
+    "@graphql-codegen/typescript-react-apollo": "^2.2.4"
+  },
+  "dependencies": {
+    "graphql": "^15.5.1"
+  }
+}

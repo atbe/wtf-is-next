@@ -1,0 +1,9 @@
+fragment Message on messages {
+  message
+  createdAt
+  id
+  userId
+  user {
+    username
+  }
+}

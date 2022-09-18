@@ -1,81 +1,21 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  HStack,
-  Input,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Input, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
+import { useGetHistoryQuery } from "../generated/react-graphql";
 import { Message } from "./api/chat/history";
 
 const Home: NextPage = () => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
 
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
-  const [messages, setMessages] = useState<Message[]>([]);
-
   const [spawnTime, setSpawnTime] = useState(0);
 
-  const getResults = useCallback(async () => {
-    console.log("callApi called");
-
-    if (loading) {
-      return;
-    }
-
-    setLoading(true);
-
-    const response = await fetch("/api/chat/history");
-
-    if (!response.ok) {
-      console.error("response not ok", response.status);
-    }
-
-    const json = await response.json();
-    const history = json.chatHistory;
-
-    const spawn = json.spawnTime;
-
-    setSpawnTime(spawn);
-    setMessages(history);
-    setLoading(false);
-  }, [loading]);
-
-  const sendMessage = useCallback(async () => {
-    const response = await fetch("/api/chat/sendMessage", {
-      body: JSON.stringify({ username: name, message }),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.error("response not ok", response.status);
-    }
-    console.log("we said hello!");
-
-    setMessage("");
-
-    getResults();
-  }, [getResults, message, name]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      getResults();
-    }, 2000);
-
-    return () => {
-      clearInterval(id);
-    };
-  }, [getResults]);
+  const { data, loading } = useGetHistoryQuery({
+    pollInterval: 2000,
+  });
 
   return (
     <Flex p={8} flex={1} minW="100%">
@@ -87,10 +27,6 @@ const Home: NextPage = () => {
 
       <main>
         <Flex flexDir={"column"} color="white" gridGap={"8px"} flex={1}>
-          <Heading fontSize={"1.5em"}>
-            The server spawned at {new Date(spawnTime).toLocaleString()}
-          </Heading>
-
           <Flex flexDir={"column"} color="white" gridGap={"8px"} w="100%">
             <HStack alignItems={"center"} w="100%">
               <Text fontSize={"1em"}>Username</Text>
@@ -118,7 +54,8 @@ const Home: NextPage = () => {
           </Flex>
 
           <Box>
-            {messages.map(({ message, name, time }) => {
+            {data?.messages.map(({ message, user, createdAt }) => {
+              const time = new Date(createdAt).toLocaleTimeString();
               return (
                 <Flex
                   key={name}
@@ -130,7 +67,7 @@ const Home: NextPage = () => {
                   my={4}
                 >
                   <Text>
-                    {name} - {time}
+                    {user?.username} - {time}
                   </Text>
                   <Text>{message}</Text>
                 </Flex>

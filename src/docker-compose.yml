@@ -27,6 +27,7 @@ services:
       - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:password@chat-app:5432/postgres
       - HASURA_GRAPHQL_ADMIN_SECRET=password
       - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+      - HASURA_GRAPHQL_UNAUTHORIZED_ROLE=user
       - PORT=8080
 
 volumes:
