@@ -5,7 +5,6 @@ import {
   Heading,
   HStack,
   Input,
-  Spinner,
   Text,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
@@ -21,6 +20,8 @@ const Home: NextPage = () => {
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const [spawnTime, setSpawnTime] = useState(0);
 
   const getResults = useCallback(async () => {
     console.log("callApi called");
@@ -39,6 +40,10 @@ const Home: NextPage = () => {
 
     const json = await response.json();
     const history = json.chatHistory;
+
+    const spawn = json.spawnTime;
+
+    setSpawnTime(spawn);
     setMessages(history);
     setLoading(false);
   }, [loading]);
@@ -56,6 +61,8 @@ const Home: NextPage = () => {
       console.error("response not ok", response.status);
     }
     console.log("we said hello!");
+
+    setMessage("");
 
     getResults();
   }, [getResults, message, name]);
@@ -80,6 +87,10 @@ const Home: NextPage = () => {
 
       <main>
         <Flex flexDir={"column"} color="white" gridGap={"8px"} flex={1}>
+          <Heading fontSize={"1.5em"}>
+            The server spawned at {new Date(spawnTime).toLocaleString()}
+          </Heading>
+
           <Flex flexDir={"column"} color="white" gridGap={"8px"} w="100%">
             <HStack alignItems={"center"} w="100%">
               <Text fontSize={"1em"}>Username</Text>
@@ -101,6 +112,7 @@ const Home: NextPage = () => {
                     sendMessage();
                   }
                 }}
+                value={message}
               ></Input>
             </HStack>
           </Flex>
