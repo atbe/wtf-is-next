@@ -5,7 +5,12 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <Flex flexDir={"column"} backgroundColor="black" minH="100vh">
+      <Flex
+        flexDir={"column"}
+        backgroundColor="black"
+        minH="100vh"
+        minW="100vw"
+      >
         <Box p={8}>
           <Component {...pageProps} />
         </Box>
