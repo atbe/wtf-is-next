@@ -32,3 +32,11 @@ $ hasura console --admin-secret password --endpoint http://127.0.0.1:8082
 $ hasura migrate apply --admin-secret password --endpoint http://127.0.0.1:8082
 $ hasura metadata apply --admin-secret password --endpoint http://127.0.0.1:8082
 ```
+
+### Starting the next site
+
+```
+$ cd src/wtf-is-next
+$ yarn install
+$ yarn run dev
+```
