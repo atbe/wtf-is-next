@@ -8,15 +8,20 @@
 This will start running postgres and a hasura graphql engine
 
 ```bash
-$ docker-compose start
+$ docker-compose up
 ```
+
+### Install all yarn packages
+
+````bash
+$ cd src/
 
 ### Start the hasura console
 
 ```bash
 $ cd src/hasura
 $ hasura console --admin-secret password --endpoint http://127.0.0.1:8082
-```
+````
 
 ### Setup your database by running migrations
 
