@@ -1,4 +1,12 @@
-import { Button, Flex, Heading, Input, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Input,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
@@ -7,9 +15,9 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
 
-  const [result, setResult] = useState<string | undefined>(undefined);
-
   const [name, setName] = useState("");
+
+  const [shoutouts, setShoutouts] = useState<{ [key: string]: number }>({});
 
   const callApi = useCallback(async () => {
     console.log("callApi called");
@@ -23,6 +31,9 @@ const Home: NextPage = () => {
     const response = await fetch("/api/hello", {
       body: JSON.stringify({ name }),
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
@@ -31,7 +42,9 @@ const Home: NextPage = () => {
 
     const json = await response.json();
 
-    setResult(json.name);
+    const shoutouts = json.shoutouts;
+    setShoutouts(shoutouts);
+
     setLoading(false);
   }, [loading, name]);
 
@@ -45,21 +58,28 @@ const Home: NextPage = () => {
 
       <main>
         <Flex flexDir={"column"} color="white" gridGap={"8px"}>
-          <Text color={"white"}>{result}</Text>
-          {result !== "" ? (
-            <>
-              <Text fontSize={"2em"}>What is your name?</Text>
-              <Input
-                onChange={(ev) => setName(ev.target.value)}
-                placeContent={"Your name"}
-              ></Input>
-              <Button onClick={callApi} colorScheme={"green"}>
-                Say hello
-              </Button>
-            </>
-          ) : (
-            <Heading>HI {result}</Heading>
-          )}
+          <Flex flexDir={"column"} color="white" gridGap={"8px"}>
+            <Text fontSize={"2em"}>Send someone a shoutout</Text>
+            <Input
+              onChange={(ev) => setName(ev.target.value)}
+              placeContent={"Your name"}
+            ></Input>
+            <Button onClick={callApi} colorScheme={"green"}>
+              Say hello
+            </Button>
+          </Flex>
+
+          <Box>
+            {Object.keys(shoutouts).map((name) => {
+              const count = shoutouts[name];
+
+              return (
+                <Flex key={name} flexDir={"row"} gridGap={"8px"}>
+                  {name} has been shouted out {count} times
+                </Flex>
+              );
+            })}
+          </Box>
         </Flex>
       </main>
     </Flex>
