@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
   const [shoutouts, setShoutouts] = useState<{ [key: string]: number }>({});
 
-  const callApi = useCallback(async () => {
+  const getResults = useCallback(async () => {
     console.log("callApi called");
 
     if (loading) {
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
 
     setLoading(true);
 
-    const response = await fetch("/api/hello", {
+    const response = await fetch("/api/results", {
       body: JSON.stringify({ name }),
       method: "POST",
       headers: {
@@ -48,6 +48,33 @@ const Home: NextPage = () => {
     setLoading(false);
   }, [loading, name]);
 
+  const sayHello = useCallback(async () => {
+    const response = await fetch("/api/hello", {
+      body: JSON.stringify({ name }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.error("response not ok", response.status);
+    }
+    console.log("we said hello!");
+
+    getResults();
+  }, [getResults, name]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      getResults();
+    }, 2000);
+
+    return () => {
+      clearInterval(id);
+    };
+  }, [getResults, shoutouts]);
+
   return (
     <Flex p={8}>
       <Head>
@@ -64,7 +91,7 @@ const Home: NextPage = () => {
               onChange={(ev) => setName(ev.target.value)}
               placeContent={"Your name"}
             ></Input>
-            <Button onClick={callApi} colorScheme={"green"}>
+            <Button onClick={sayHello} colorScheme={"green"}>
               Say hello
             </Button>
           </Flex>
@@ -73,8 +100,15 @@ const Home: NextPage = () => {
             {Object.keys(shoutouts).map((name) => {
               const count = shoutouts[name];
 
+              const fontSize = Math.ceil(count / 2) * 2.5 + 12;
+
               return (
-                <Flex key={name} flexDir={"row"} gridGap={"8px"}>
+                <Flex
+                  key={name}
+                  flexDir={"row"}
+                  gridGap={"8px"}
+                  fontSize={`${fontSize}px`}
+                >
                   {name} has been shouted out {count} times
                 </Flex>
               );
